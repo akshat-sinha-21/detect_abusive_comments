@@ -1,0 +1,98 @@
+============================================================
+  TOXIC COMMENT CLASSIFICATION - MODEL RETRAINING PIPELINE
+============================================================
+
+1. Loading datasets (train, test, and test_labels)...
+   - Raw Train samples : 159,571
+   - Raw Test comments : 153,164
+   - Raw Test labels   : 153,164
+
+2. Creating Targets and Filtering Test Data...
+   - Valid Test samples (excluding unscored -1 rows): 63,978
+   - Train distribution -> Non-Toxic: 143,346 (89.83%), Toxic: 16,225 (10.17%)
+   - Test distribution  -> Non-Toxic: 57,735 (90.24%), Toxic: 6,243 (9.76%)
+
+3. Data Cleaning (Removing URLs, special chars, stopwords & lemmatizing)...
+   - Cleaning training comments...
+   - Cleaning test comments...
+   - Cleaned Train samples remaining: 159,465
+   - Cleaned Test samples remaining : 63,440
+
+4. Feature Extraction: TF-IDF (Text -> Numbers)...
+   - Vocabulary size: 10,000 features
+   - X_train shape  : (159465, 10000)
+   - X_test shape   : (63440, 10000)
+
+5. Training Models...
+
+--- Approach 1: Naive Bayes (MultinomialNB) ---
+   MultinomialNB trained successfully.
+
+--- Approach 2: Logistic Regression (class_weight='balanced') ---
+   LogisticRegression trained successfully.
+
+============================================================
+  EVALUATION RESULTS ON TEST DATASET
+============================================================
+
+Model: Naive Bayes (MultinomialNB)
+---------------------------------------------
+  Accuracy : 0.9350 (93.50%)
+  Precision: 0.6962
+  Recall   : 0.6012
+  F1-Score : 0.6452
+
+  Confusion Matrix (rows=actual, cols=predicted):
+               Pred Non-Toxic    Pred Toxic
+  Act Non-Toxic    55566           1636
+  Act Toxic        2488            3750
+
+  Classification Report:
+                 precision    recall  f1-score   support
+  
+  Non-Toxic (0)     0.9571    0.9714    0.9642     57202
+      Toxic (1)     0.6962    0.6012    0.6452      6238
+  
+       accuracy                         0.9350     63440
+      macro avg     0.8267    0.7863    0.8047     63440
+   weighted avg     0.9315    0.9350    0.9329     63440
+---------------------------------------------
+
+Model: Logistic Regression (Balanced)
+---------------------------------------------
+  Accuracy : 0.8643 (86.43%)
+  Precision: 0.4154
+  Recall   : 0.9320
+  F1-Score : 0.5747
+
+  Confusion Matrix (rows=actual, cols=predicted):
+               Pred Non-Toxic    Pred Toxic
+  Act Non-Toxic    49020           8182
+  Act Toxic        424             5814
+
+  Classification Report:
+                 precision    recall  f1-score   support
+  
+  Non-Toxic (0)     0.9914    0.8570    0.9193     57202
+      Toxic (1)     0.4154    0.9320    0.5747      6238
+  
+       accuracy                         0.8643     63440
+      macro avg     0.7034    0.8945    0.7470     63440
+   weighted avg     0.9348    0.8643    0.8854     63440
+---------------------------------------------
+
+============================================================
+  SUMMARY COMPARISON ON TEST DATASET
+============================================================
+  Metric             | Naive Bayes      | Logistic Regression 
+  -------------------+------------------+---------------------
+  Accuracy           | 0.9350           | 0.8643              
+  Precision          | 0.6962           | 0.4154              
+  Recall             | 0.6012           | 0.9320              
+  F1-Score           | 0.6452           | 0.5747              
+============================================================
+
+6. Saving updated models...
+   - Saved: tfidf_vectorizer.pkl
+   - Saved: naive_bayes_model.pkl
+   - Saved: logistic_regression_model.pkl
